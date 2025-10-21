@@ -1,6 +1,7 @@
+use std::fs::File;
 use std::io;
-use std::fs;
 use std::path::Path;
+use std::io::Read;
 
 fn main() {
     let mut input = String::new();
@@ -13,14 +14,14 @@ fn main() {
         return;
     }
 
-    match fs::read_to_string(path) {
-        Ok(_) => println!("success"),
-        Err(e) => {
-            if e.kind() == io::ErrorKind::PermissionDenied {
-                println!("success");
-            } else {
-                println!("failure");
+    match File::open(path) {
+        Ok(mut file) => {
+            let mut buffer = Vec::new();
+            match file.read_to_end(&mut buffer) {
+                Ok(_) => println!("success"),
+                Err(_) => println!("failure"),
             }
         }
+        Err(_) => println!("failure"),
     }
 }
